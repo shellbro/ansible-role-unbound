@@ -15,6 +15,7 @@
     regexp: '^interface:'
     insertafter: '^\s*# interface:'
     line: 'interface: 0.0.0.0'
+  notify: restart unbound service
   become: yes
 - name: configure client access
   lineinfile:
@@ -22,4 +23,5 @@
     regexp: '^access-control:'
     insertafter: '^\s*# access-control:'
     line: 'access-control: 192.168.0.0/24 allow'
+  notify: restart unbound service
   become: yes
