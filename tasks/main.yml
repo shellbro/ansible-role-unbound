@@ -1,2 +1,25 @@
 ---
-# tasks file for ansible-role-unbound
+- name: install unbound
+  yum:
+    name: unbound
+    state: present
+  become: yes
+- name: start and enable unbound service
+  service:
+    name: unbound
+    state: started
+  become: yes
+- name: configure the network interface to listen on
+  lineinfile:
+    path: /etc/unbound/unbound.conf
+    regexp: '^interface:'
+    insertafter: '^\s*# interface:'
+    line: 'interface: 0.0.0.0'
+  become: yes
+- name: configure client access
+  lineinfile:
+    path: /etc/unbound/unbound.conf
+    regexp: '^access-control:'
+    insertafter: '^\s*# access-control:'
+    line: 'access-control: 192.168.0.0/24 allow'
+  become: yes

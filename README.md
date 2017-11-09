@@ -8,7 +8,7 @@ Ansible role that sets up unbound caching nameserver on CentOS 7.
 Requirements
 ------------
 
-None
+Ansible version >= 2.3.
 
 Role Variables
 --------------
