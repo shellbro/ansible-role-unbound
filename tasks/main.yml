@@ -8,13 +8,14 @@
   service:
     name: unbound
     state: started
-  become: yes
+  become: yes  
 - name: configure the network interface to listen on
   lineinfile:
     path: /etc/unbound/unbound.conf
     regexp: '^interface:'
     insertafter: '^\s*# interface:'
     line: 'interface: 0.0.0.0'
+    validate: unbound-checkconf %s
   notify: restart unbound service
   become: yes
 - name: configure client access
@@ -23,5 +24,32 @@
     regexp: '^access-control:'
     insertafter: '^\s*# access-control:'
     line: 'access-control: 192.168.0.0/24 allow'
+    validate: unbound-checkconf %s
   notify: restart unbound service
+  become: yes
+- name: configure forwarding
+  blockinfile:
+    path: /etc/unbound/unbound.conf
+    block: |
+      forward-zone:
+        name: "."
+        forward-addr: 8.8.8.8 # Google
+        forward-addr: 208.67.222.222 # OpenDNS
+        forward-addr: 8.8.4.4 # Google
+        forward-addr: 208.67.220.220 # OpenDNS
+    validate: unbound-checkconf %s
+  notify: restart unbound service
+  become: yes
+- name: check if firewalld is running
+  command: systemctl status firewalld
+  register: firewalld_status
+  changed_when: false
+  failed_when: firewalld_status.rc > 4
+- name: open DNS ports in firewall
+  firewalld:
+    service: dns
+    state: enabled
+    permanent: yes
+    immediate: yes
+  when: firewalld_status.rc == 0
   become: yes
