@@ -8,7 +8,8 @@
   service:
     name: unbound
     state: started
-  become: yes  
+    enabled: yes
+  become: yes
 - name: configure the network interface to listen on
   lineinfile:
     path: /etc/unbound/unbound.conf
