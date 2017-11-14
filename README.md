@@ -15,7 +15,6 @@ Role Variables
 
 - interfaces - network interfaces to listen on, if not defined the default is to listen to localhost (127.0.0.1 and ::1)
 - access_control - control which clients are allowed to make quries to this server, if not defined everything is refused, except for localhost
-- 
 
 Dependencies
 ------------
