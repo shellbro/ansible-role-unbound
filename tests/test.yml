@@ -1,4 +1,8 @@
 ---
 - hosts: all
   roles:
-    - shellbro.unbound
+    - role: shellbro.unbound
+      interfaces:
+        - 0.0.0.0
+      access_control:
+        - 0.0.0.0/0 allow

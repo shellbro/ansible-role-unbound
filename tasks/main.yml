@@ -10,13 +10,15 @@
     state: started
     enabled: yes
   become: yes
-- name: configure the network interface to listen on
+- name: configure network interfaces to listen on
   lineinfile:
     path: /etc/unbound/unbound.conf
     regexp: '^interface:'
     insertafter: '^\s*# interface:'
-    line: 'interface: 0.0.0.0'
+    line: 'interface: {{ item }}'
     validate: unbound-checkconf %s
+  with_items: '{{ interfaces }}'
+  when: interfaces is defined
   notify: restart unbound service
   become: yes
 - name: configure client access
@@ -24,8 +26,10 @@
     path: /etc/unbound/unbound.conf
     regexp: '^access-control:'
     insertafter: '^\s*# access-control:'
-    line: 'access-control: 192.168.0.0/24 allow'
+    line: 'access-control: {{ item }}'
     validate: unbound-checkconf %s
+  with_items: '{{ access_control }}'
+  when: access_control is defined
   notify: restart unbound service
   become: yes
 - name: configure forwarding
