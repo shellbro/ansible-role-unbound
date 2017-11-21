@@ -17,8 +17,8 @@
     line: 'interface: {{ item }}'
     validate: unbound-checkconf %s
   with_items: '{{ interfaces }}'
-  when: interfaces is defined
   notify: restart unbound service
+  when: interfaces is defined  
   become: yes
 - name: configure client access
   lineinfile:
@@ -27,8 +27,8 @@
     line: 'access-control: {{ item }}'
     validate: unbound-checkconf %s
   with_items: '{{ access_control }}'
-  when: access_control is defined
   notify: restart unbound service
+  when: access_control is defined  
   become: yes
 - name: configure forwarding
   blockinfile:
