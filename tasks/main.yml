@@ -30,6 +30,14 @@
   notify: restart unbound service
   when: access_control is defined  
   become: yes
+- name: turn off DNSSEC validation
+  lineinfile:
+    path: /etc/unbound/unbound.conf
+    regexp: '^\s*val-permissive-mode:'
+    line: 'val-permissive-mode: yes'
+    validate: unbound-checkconf %s
+  notify: restart unbound service
+  become: yes
 - name: configure forwarding
   blockinfile:
     path: /etc/unbound/unbound.conf
